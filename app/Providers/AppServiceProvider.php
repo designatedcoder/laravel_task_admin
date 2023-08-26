@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Events\TaskExecuted;
 use App\Observers\TaskObserver;
-use App\Task;
+use App\Models\Task;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 
@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function schedule(Schedule $schedule)
     {
-        $tasks = app('App\Task')->getActive();
+        $tasks = app('App\Models\Task')->getActive();
         foreach ($tasks as $task) {
             $event = $schedule->exec($task->command);
             $event->cron($task->expression)
