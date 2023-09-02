@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Cron\CronExpression;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'description',
@@ -64,8 +66,12 @@ class Task extends Model
         });
     }
 
-    public function results()
-    {
+    /**
+     * Get all of the results for the Task
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function results(): HasMany {
         return $this->hasMany(Result::class);
     }
 

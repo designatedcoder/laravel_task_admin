@@ -1,0 +1,28 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Task;
+use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Result>
+ */
+class ResultFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array {
+        $results = ['completed', 'incomplete'];
+        return [
+            'task_id' => Task::factory(),
+            'ran_at' => now(),
+            'duration' => $this->faker->numberBetween(1, 59),
+            'result' => Arr::random($results),
+        ];
+    }
+}

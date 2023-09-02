@@ -4,18 +4,16 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTaskResultsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
-     * @return void
      */
-    public function up()
-    {
-        Schema::create('task_results', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('task_id');
+    public function up() :void {
+        Schema::create('results', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('task_id')->constrained()->cascadeOnDelete();
             $table->timestamp('ran_at')->useCurrent();
             $table->string('duration');
             $table->longText('result');
@@ -26,10 +24,9 @@ class CreateTaskResultsTable extends Migration
     /**
      * Reverse the migrations.
      *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('task_results');
+        Schema::dropIfExists('results');
     }
-}
+};

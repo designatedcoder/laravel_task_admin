@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Task;
+use App\Models\Task;
 use Illuminate\Support\Facades\Cache;
 
 class TaskObserver
@@ -10,7 +10,7 @@ class TaskObserver
     /**
      * Handle the task "created" event.
      *
-     * @param  \App\Task  $task
+     * @param  \App\Models\Task  $task
      * @return void
      */
     public function created(Task $task)
@@ -22,7 +22,7 @@ class TaskObserver
     /**
      * Handle the task "updated" event.
      *
-     * @param  \App\Task  $task
+     * @param  \App\Models\Task  $task
      * @return void
      */
     public function updated(Task $task)
@@ -34,7 +34,7 @@ class TaskObserver
     /**
      * Handle the task "deleted" event.
      *
-     * @param  \App\Task  $task
+     * @param  \App\Models\Task  $task
      * @return void
      */
     public function deleted(Task $task)
