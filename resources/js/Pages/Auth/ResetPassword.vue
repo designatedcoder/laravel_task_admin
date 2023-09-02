@@ -34,52 +34,60 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
+        <div class="card-body">
+            <div v-if="status" class="alert alert-success mb-3 rounded-0" role="alert">
+            {{ status }}
             </div>
+            <form @submit.prevent="submit">
+                <div class="mt-3">
+                    <InputLabel for="email" value="Email" />
+                    <TextInput
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        class="mt-1 d-block w-100"
+                        :class="{'is-invalid' : form.errors.email}"
+                        autocomplete="username"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
+                <div class="mt-3">
+                    <InputLabel for="password" value="Password" />
+                    <TextInput
+                        id="password"
+                        v-model="form.password"
+                        type="password"
+                        class="mt-1 d-block w-100"
+                        :class="{'is-invalid' : form.errors.password}"
+                        autocomplete="new-password"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.password" />
+                </div>
+                <div class="mt-3">
+                    <div class="form-check">
+                        <Checkbox name="remember" v-model:checked="form.remember" />
+                        <label class="form-check-label" for="remember">Remember me
+                        </label>
+                    </div>
+                </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-end align-items-baseline">
+                        <Link v-if="canResetPassword" :href="route('password.request')" class="text-muted me-3">
+                            Forgot your password?
+                        </Link>
 
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
-                </PrimaryButton>
-            </div>
-        </form>
+                        <PrimaryButton class="ms-4" :class="{ 'text-white-50': form.processing }" :disabled="form.processing">
+                            <div v-show="form.processing" class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            Log in
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </form>
+        </div>
     </AuthenticationCard>
 </template>

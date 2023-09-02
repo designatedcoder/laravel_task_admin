@@ -33,31 +33,44 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="card-body">
+
+            <div class="mb-2">
             This is a secure area of the application. Please confirm your password before continuing.
+            </div>
+
+            <form @submit.prevent="submit">
+                <div class="mt-3">
+                    <InputLabel for="password" value="Password" />
+                    <TextInput
+                        id="password"
+                        ref="passwordInput"
+                        v-model="form.password"
+                        type="password"
+                        class="mt-1 d-block w-100"
+                        :class="{'is-invalid' : form.errors.password}"
+                        required
+                        autocomplete="current-password"
+                        autofocus
+                    />
+                    <InputError class="mt-2" :message="form.errors.password" />
+                </div>
+
+                <div class="mt-3">
+                    <div class="d-flex justify-content-end">
+                        <Link v-if="canResetPassword" :href="route('password.request')" class="text-muted me-3">
+                            Forgot your password?
+                        </Link>
+
+                        <PrimaryButton class="ms-4" :class="{ 'text-white-50': form.processing }" :disabled="form.processing">
+                            <div v-show="form.processing" class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            Confirm
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="current-password"
-                    autofocus
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="flex justify-end mt-4">
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Confirm
-                </PrimaryButton>
-            </div>
-        </form>
     </AuthenticationCard>
 </template>
