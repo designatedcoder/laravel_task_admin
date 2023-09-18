@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Task;
+use App\Models\Task;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,6 +10,7 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Facades\Storage;
 
 class TaskExecuted
 {
@@ -23,18 +24,14 @@ class TaskExecuted
      *
      * @return void
      */
-    public function __construct(Task $task, $elapsed_time)
-    {
+    public function __construct(Task $task, $elapsed_time) {
         $this->task = $task;
         // Get execution results
-        if (file_exists(storage_path('task-'.sha1($task->expression . $task->command)))) {
-            $this->output = file_get_contents(storage_path('task-'.sha1($task->expression . $task->command)));
-            $task->results()->create([
-                'duration' => $elapsed_time * 1000,
-                'result' => $this->output
-            ]);
-            unlink(storage_path('task-'.sha1($task->expression . $task->command)));
-        }
+        $task->results()->firstOrCreate([
+            'duration' => $elapsed_time * 1000,
+            'result' => 'completed'
+        ]);
+        Storage::put(('tasks/task-'.sha1($task->expression . $task->command)), $task->results);
     }
 
     /**

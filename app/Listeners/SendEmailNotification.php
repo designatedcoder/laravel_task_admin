@@ -25,8 +25,7 @@ class SendEmailNotification
      * @param  TaskExecuted  $event
      * @return void
      */
-    public function handle(TaskExecuted $event)
-    {
-        $event->task->notify(new TaskCompleted($event->output));
+    public function handle(TaskExecuted $event) {
+        $event->task->notify(new TaskCompleted($event->task));
     }
 }

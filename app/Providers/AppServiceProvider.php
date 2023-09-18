@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function schedule(Schedule $schedule)
     {
-        $tasks = app('App\Models\Task')->getActive();
+        $tasks = app(Task::class)->getActive();
         foreach ($tasks as $task) {
             $event = $schedule->exec($task->command);
             $event->cron($task->expression)
@@ -45,8 +45,7 @@ class AppServiceProvider extends ServiceProvider
                 ->after(function () use ($event, $task) {
                     $elapsed_time = microtime(true) - $event->start;
                     event(new TaskExecuted($task, $elapsed_time));
-                })
-                ->sendOutputTo(storage_path('task-'.sha1($task->expression . $task->command)));
+                });
         }
     }
 }
