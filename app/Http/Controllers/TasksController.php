@@ -4,23 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use Inertia\Inertia;
 
 class TasksController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         $tasks = (new Task)->getAll();
-
-        return view('tasks.index', ['tasks' => $tasks]);
+        return Inertia::render('Tasks/Index', [
+            'tasks' => $tasks
+        ]);
     }
 
     /**
@@ -28,9 +25,8 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('tasks.create');
+    public function create() {
+        return Inertia::render('Tasks/Create');
     }
 
     /**
@@ -39,32 +35,28 @@ class TasksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        Task::create($request->all());
-        return redirect('/tasks')->with('status', 'Task Created');
+    public function store(Request $request) {
+        Task::create([
+            'description' => $request->description,
+            'command' => $request->command,
+            'expression' => $request->expression ?? '* * * * *',
+            'notification_email' => $request->notification_email,
+            'dont_overlap' => $request->dont_overlap,
+            'run_in_maintenance' => $request->run_in_maintenance,
+        ]);
+        return to_route('tasks.index')->with('status', 'Task Created');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  Task  $task
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Task $task)
-    {
-        return view('tasks.edit', ['task' => $task]);
+    public function show(Task $task) {
+        return Inertia::render('Tasks/Show', [
+            'task' => $task
+        ]);
     }
 
     /**
@@ -74,10 +66,16 @@ class TasksController extends Controller
      * @param  Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
-    {
-        $task->update($request->all());
-        return redirect('/tasks')->with('status', 'Task Updated');
+    public function update(Request $request, Task $task) {
+        $task->update([
+            'description' => $request->description,
+            'command' => $request->command,
+            'expression' => $request->expression ?? '* * * * *',
+            'notification_email' => $request->notification_email,
+            'dont_overlap' => $request->dont_overlap,
+            'run_in_maintenance' => $request->run_in_maintenance,
+        ]);
+        return to_route('tasks.index')->with('status', 'Task Updated');
     }
 
     /**
@@ -86,10 +84,9 @@ class TasksController extends Controller
      * @param  Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
-    {
+    public function destroy(Task $task) {
         $task->delete();
-        return redirect('/tasks')->with('status', 'Task Deleted');
+        return to_route('tasks.index')->with('status', 'Task Deleted');
     }
 
     /**
@@ -98,10 +95,9 @@ class TasksController extends Controller
      * @param  Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function toggle(Task $task)
-    {
+    public function toggle(Task $task) {
         $task->is_active = !$task->is_active;
         $task->save();
-        return redirect('/tasks')->with('status', 'Task Updated');
+        return to_route('tasks.index')->with('status', 'Task Updated');
     }
 }
